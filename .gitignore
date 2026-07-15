@@ -17,3 +17,6 @@ frontend/.figma/
 *.tgz
 coverage/
 .nyc_output/
+
+.vercel
+.env*
