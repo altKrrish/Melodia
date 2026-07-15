@@ -22,6 +22,9 @@ const connectDB = async () => {
     
     // Fallback to in-memory server if local connection string or missing
     if (!uri || uri.includes('localhost')) {
+      if (process.env.VERCEL) {
+        throw new Error('MONGO_URI is missing. Vercel Serverless functions cannot run an in-memory MongoDB. Please add a valid MONGO_URI to your Vercel Environment Variables.');
+      }
       logger.info('Using in-memory MongoDB for local development');
       mongod = await MongoMemoryServer.create();
       uri = mongod.getUri();
