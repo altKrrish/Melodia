@@ -99,6 +99,7 @@ export const getTrendingTracks = async () => {
         chart: 'mostPopular',
         videoCategoryId: '10', // Music category
         maxResults: 15,
+        regionCode: 'US', // Required for serverless to not return empty
         key: YOUTUBE_API_KEY
       }
     });
