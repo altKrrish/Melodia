@@ -111,46 +111,6 @@ const AVATARS = [
   'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&q=80'  // Grid Explorer
 ];
 
-// Reusable Playlist Cover Component
-const PlaylistCover = ({ playlist, className = "" }: { playlist: Playlist | any, className?: string }) => {
-  if (!playlist) {
-    return (
-      <div className={`flex items-center justify-center bg-indigo-900/40 text-indigo-400 ${className}`}>
-        <Music size={24} />
-      </div>
-    );
-  }
-
-  if (playlist.coverImage) {
-    return <img src={playlist.coverImage} alt={playlist.name} loading="lazy" className={`object-cover ${className}`} />;
-  }
-  
-  if (playlist.songs && playlist.songs.length >= 4) {
-    const covers = playlist.songs.slice(0, 4).map((s: any) => s.coverImage || s.thumbnail || '');
-    // Ensure all 4 actually have covers
-    if (covers.every((c: string) => c)) {
-      return (
-        <div className={`grid grid-cols-2 grid-rows-2 ${className}`}>
-          {covers.map((url: string, i: number) => (
-            <img key={i} src={url} alt="" loading="lazy" className="w-full h-full object-cover" />
-          ))}
-        </div>
-      );
-    }
-  }
-
-  const singleCover = playlist.songs && playlist.songs.length > 0 ? (playlist.songs[0].coverImage || playlist.songs[0].thumbnail) : null;
-  if (singleCover) {
-    return <img src={singleCover} alt={playlist.name} loading="lazy" className={`object-cover ${className}`} />;
-  }
-
-  return (
-    <div className={`flex items-center justify-center bg-indigo-900/40 text-indigo-400 ${className}`}>
-      <Music size={24} />
-    </div>
-  );
-};
-
 // I. COMMUNITY VIEW
 const CommunityView = ({ onViewProfile, onSelectPlaylist }: any) => {
   const [users, setUsers] = useState<any[]>([]);
@@ -223,7 +183,7 @@ const CommunityView = ({ onViewProfile, onSelectPlaylist }: any) => {
                 className="glass-panel p-4 rounded-3xl border border-indigo-500/10 bg-[#0C1030]/80 hover:bg-[#13173A] transition-colors cursor-pointer group flex flex-col"
               >
                 <div className="aspect-square bg-gradient-to-br from-[#1E2555] to-[#0A0D28] rounded-2xl mb-3 flex items-center justify-center border border-indigo-500/5 group-hover:border-indigo-500/20 relative overflow-hidden">
-                  <PlaylistCover playlist={p} className="w-full h-full" />
+                  <Music size={24} className="text-indigo-400/50" />
                 </div>
                 <h4 className="text-sm font-bold text-white truncate">{p.name}</h4>
                 <p className="text-[10px] text-[#64748B] mt-1">{p.songs?.length || 0} Tracks • {p.owner?.username || 'Unknown'}</p>
@@ -1307,7 +1267,9 @@ export default function App() {
                         className={`w-full group flex items-center justify-between px-3 py-2 rounded-full cursor-pointer transition-all border ${selectedPlaylist?._id === playlist._id && currentView === 'playlist' ? 'bg-[#1A1F4C]/80 border-indigo-500/20 text-white font-medium' : 'text-[#94A3B8] border-transparent hover:bg-[#13173A] hover:text-white'}`}
                       >
                         <div className="flex items-center gap-2.5 truncate">
-                          <PlaylistCover playlist={playlist} className="w-6 h-6 rounded-full flex items-center justify-center shrink-0 shadow-sm text-2xs text-white font-bold" />
+                          <div className="w-6 h-6 rounded-full bg-gradient-to-br from-[#6366F1] to-[#D946EF] flex items-center justify-center shrink-0 shadow-sm text-2xs text-white font-bold">
+                            P
+                          </div>
                           <span className="text-xs truncate">{playlist.name}</span>
                         </div>
                         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
@@ -1657,57 +1619,50 @@ export default function App() {
                       </div>
                     ) : (
                       <>
-                        <div className="relative group">
-                          <div className="absolute -inset-1 bg-gradient-to-r from-[#D946EF]/20 to-[#0EA5E9]/20 rounded-2xl blur-md opacity-50 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
-                          <div className="relative bg-[#13173A] border border-[#D946EF]/20 rounded-2xl overflow-hidden shadow-2xl flex flex-col focus-within:border-[#D946EF]/60 focus-within:ring-1 focus-within:ring-[#D946EF]/60 transition-all">
-                            <textarea
-                              autoFocus
-                              placeholder='e.g., "retro night drive with heavy synthwave beats"'
-                              value={aiPromptInput}
-                              onChange={(e) => setAiPromptInput(e.target.value)}
-                              rows={3}
-                              className="w-full bg-transparent p-5 text-sm font-medium text-white focus:outline-none placeholder:text-[#64748B] resize-none"
-                            />
-                            <div className="bg-[#101431] p-3 flex items-center justify-between border-t border-[#D946EF]/10">
-                              <span className="text-2xs text-[#D946EF]/70 font-semibold uppercase tracking-widest px-2 flex items-center gap-1.5"><Activity size={10} /> AI Curator</span>
-                              <button 
-                                onClick={() => handleAiSmartPlaylist()}
-                                disabled={!aiPromptInput.trim()}
-                                className="px-5 py-2 rounded-xl font-black text-xs bg-gradient-to-r from-[#6366F1] to-[#D946EF] text-white disabled:opacity-40 hover:opacity-100 transition-all shadow-[0_0_15px_rgba(217,70,239,0.4)] disabled:shadow-none flex items-center gap-2 hover:scale-105 active:scale-95"
-                              >
-                                <Music size={14} /> Generate
-                              </button>
-                            </div>
+                        <div className="relative">
+                          <label className="block text-xs font-bold text-[#94A3B8] mb-1.5 ml-1">Describe Your Vibe</label>
+                          <textarea
+                            autoFocus
+                            placeholder='e.g., "retro night drive with heavy synthwave beats"'
+                            value={aiPromptInput}
+                            onChange={(e) => setAiPromptInput(e.target.value)}
+                            rows={3}
+                            className="w-full bg-[#13173A] border border-indigo-500/20 rounded-xl p-4 text-sm text-white focus:outline-none focus:border-[#D946EF]/50 focus:ring-1 focus:ring-[#D946EF]/50 transition-all placeholder:text-slate-600 resize-none"
+                          />
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                          {['Cyberpunk Neon City', '80s Workout Montage', 'Chill Lofi Beats'].map((t, idx) => (
+                            <button
+                              key={idx}
+                              onClick={() => setAiPromptInput(t)}
+                              className="px-3 py-1.5 rounded-lg bg-[#161B46] border border-indigo-500/20 hover:border-[#D946EF]/50 hover:bg-[#1E245D] text-[10px] font-bold text-indigo-200 transition-all"
+                            >
+                              {t}
+                            </button>
+                          ))}
+                        </div>
+                        <div className="pt-2 flex flex-col gap-3">
+                          <button 
+                            onClick={() => handleAiSmartPlaylist()}
+                            disabled={!aiPromptInput.trim()}
+                            className="w-full py-3 rounded-xl font-bold text-sm bg-gradient-to-r from-[#6366F1] to-[#D946EF] text-white disabled:opacity-50 hover:opacity-90 transition-all shadow-lg flex items-center justify-center gap-2"
+                          >
+                            <Activity size={18} /> Generate from Prompt
+                          </button>
+                          
+                          <div className="relative flex items-center py-2">
+                            <div className="flex-grow border-t border-[#4A5075]/30"></div>
+                            <span className="flex-shrink-0 mx-4 text-[#4A5075] text-xs font-bold uppercase">OR</span>
+                            <div className="flex-grow border-t border-[#4A5075]/30"></div>
                           </div>
-                        </div>
-                        
-                        <div className="mt-5">
-                          <p className="text-[10px] font-bold text-[#64748B] uppercase tracking-wider mb-2.5 px-1">Try these vibes</p>
-                          <div className="flex flex-wrap gap-2">
-                            {['Late night cyberpunk drive 🌃', 'High energy lifting anthems 🏋️', 'Chill lo-fi study session ☕', '80s Disco Fever 🪩'].map((t, idx) => (
-                              <button
-                                key={idx}
-                                onClick={() => setAiPromptInput(t)}
-                                className="px-3.5 py-2 rounded-xl bg-[#161B46] border border-indigo-500/30 hover:border-[#D946EF] hover:bg-[#1C2152] hover:shadow-[0_0_10px_rgba(217,70,239,0.3)] text-xs font-semibold text-indigo-100 transition-all active:scale-95 text-left"
-                              >
-                                {t}
-                              </button>
-                            ))}
-                          </div>
-                        </div>
 
-                        <div className="relative flex items-center py-5 mt-2">
-                          <div className="flex-grow border-t border-[#4A5075]/30"></div>
-                          <span className="flex-shrink-0 mx-4 text-[#4A5075] text-3xs font-extrabold uppercase tracking-widest">Or Auto-Mix</span>
-                          <div className="flex-grow border-t border-[#4A5075]/30"></div>
+                          <button 
+                            onClick={() => handleGenerateSmartPlaylist()}
+                            className="w-full py-3 rounded-xl font-bold text-sm bg-[#1E2555] border border-indigo-500/30 text-white hover:bg-[#2A3166] transition-all flex items-center justify-center gap-2"
+                          >
+                            <Heart size={18} className="text-rose-500" /> Auto-Mix Liked Songs
+                          </button>
                         </div>
-
-                        <button 
-                          onClick={() => handleGenerateSmartPlaylist()}
-                          className="w-full py-3.5 rounded-2xl font-bold text-sm bg-gradient-to-r from-[#171C4B] to-[#1C1645] border border-rose-500/20 text-white hover:border-rose-500/60 hover:shadow-[0_0_20px_rgba(244,63,94,0.3)] transition-all flex items-center justify-center gap-2 hover:scale-[1.02]"
-                        >
-                          <Heart size={16} fill="currentColor" className="text-rose-500" /> Create from Liked Songs
-                        </button>
                       </>
                     )}
                   </div>
@@ -2060,9 +2015,9 @@ const PlaylistView = ({ playlist, playSong, currentSong, isPlaying, likedSongs, 
       
       {/* Header card */}
       <div className="flex flex-col md:flex-row items-center md:items-end gap-6 border-b border-indigo-500/10 pb-6 mb-6 text-center md:text-left">
-        <div className="w-40 h-40 rounded-3xl bg-gradient-to-br from-[#6366F1] via-[#D946EF] to-[#0EA5E9] flex items-center justify-center shrink-0 shadow-lg border-2 border-indigo-400/20 relative group overflow-hidden">
-          <PlaylistCover playlist={playlist} className="w-full h-full" />
-          <div className="absolute inset-0 shadow-[inset_0_0_20px_rgba(217,70,239,0.2)]"></div>
+        <div className="w-40 h-40 rounded-3xl bg-gradient-to-br from-[#6366F1] via-[#D946EF] to-[#0EA5E9] flex items-center justify-center shrink-0 shadow-lg border-2 border-indigo-400/20 relative group">
+          <Music size={48} className="text-white" />
+          <div className="absolute inset-0 rounded-3xl shadow-[0_0_20px_rgba(217,70,239,0.2)]"></div>
         </div>
         
         <div className="flex-1 space-y-1">

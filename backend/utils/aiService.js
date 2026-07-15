@@ -137,11 +137,11 @@ export const generateAiPlaylist = async (userPrompt) => {
         messages: [
           {
             role: 'system',
-            content: 'You are a master music curator AI. Your task is to generate a highly creative, custom playlist based on the user\'s prompt. You MUST return ONLY a valid JSON object with EXACTLY three keys: "name" (a catchy, creative title for the playlist, max 6 words), "description" (a highly engaging description of the vibe, max 2 sentences), and "songs" (an array of exactly 30 unique song objects). Each song object must have "title" (string) and "artist" (string). CRITICAL RULES: 1. No duplicate songs or artists. 2. Output RAW JSON ONLY. No markdown, no backticks, no conversational text.'
+            content: 'You are a music recommendation AI. Return ONLY a valid JSON object containing a creative "name" (string), a short "description" (string), and an array of exactly 30 "songs" matching the user\'s prompt. Each song object must have "title" (string) and "artist" (string) keys. CRITICAL: Every single song MUST be unique - never repeat the same song or artist twice. Include a diverse mix of well-known and lesser-known tracks. Vary the decades and sub-genres. DO NOT wrap the response in markdown code blocks or backticks. NEVER output any extra conversational text. OUTPUT RAW JSON ONLY.'
           },
           {
             role: 'user',
-            content: `Create a custom playlist based on this exact prompt: "${userPrompt}". Make sure the "name" and "description" fields perfectly capture the essence of this prompt. Include deep cuts and hidden gems, not just obvious hits. Random seed: ${Date.now()}`
+            content: `${userPrompt}. Generate a FRESH and UNIQUE selection - avoid commonly suggested songs. Include hidden gems and deep cuts. Current timestamp for randomness seed: ${Date.now()}`
           }
         ],
         temperature: 1.0,

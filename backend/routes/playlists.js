@@ -94,7 +94,7 @@ router.get(
   protect,
   asyncHandler(async (req, res) => {
     const playlists = await Playlist.find({ owner: req.user.userId })
-      .populate('songs', 'title artist coverImage duration videoId')
+      .populate('songs', 'title artist duration')
       .sort({ createdAt: -1 });
 
     res.status(200).json({
