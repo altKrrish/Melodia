@@ -33,16 +33,22 @@ const transports = [
       format,
     ),
   }),
-  new winston.transports.File({
-    filename: 'logs/error.log',
-    level: 'error',
-    format,
-  }),
-  new winston.transports.File({
-    filename: 'logs/all.log',
-    format,
-  }),
 ];
+
+// Add file transports only in development to prevent read-only fs errors on Vercel
+if (config.NODE_ENV !== 'production' && !process.env.VERCEL) {
+  transports.push(
+    new winston.transports.File({
+      filename: 'logs/error.log',
+      level: 'error',
+      format,
+    }),
+    new winston.transports.File({
+      filename: 'logs/all.log',
+      format,
+    })
+  );
+}
 
 export const logger = winston.createLogger({
   level: config.LOG_LEVEL,
