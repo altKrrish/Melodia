@@ -27,8 +27,8 @@ export const searchYouTube = async (query) => {
     ? query 
     : `${query} official audio`;
 
-  try {
-    logger.info(`Searching YouTube API v3 for: "${searchQuery}"`);
+  const tryApi = async (keyToUse) => {
+    logger.info(`Searching YouTube API v3 for: "${searchQuery}" with key`);
     const response = await axios.get('https://www.googleapis.com/youtube/v3/search', {
       params: {
         part: 'snippet',
@@ -36,14 +36,12 @@ export const searchYouTube = async (query) => {
         type: 'video',
         videoCategoryId: '10', // Music category
         maxResults: 15,
-        key: YOUTUBE_API_KEY
+        key: keyToUse
       }
     });
 
     const items = response.data.items || [];
-    if (items.length === 0) {
-      return await searchYouTubeFallback(searchQuery);
-    }
+    if (items.length === 0) throw new Error("API returned 0 items");
 
     return items.map(item => ({
       _id: item.id.videoId,
@@ -55,8 +53,21 @@ export const searchYouTube = async (query) => {
       audioUrl: `https://www.youtube.com/watch?v=${item.id.videoId}`,
       source: 'youtube'
     }));
+  };
+
+  try {
+    return await tryApi(YOUTUBE_API_KEY);
   } catch (error) {
-    logger.warn(`YouTube search API failed: ${error.message}. Falling back to yt-search.`);
+    logger.warn(`Primary YouTube search API failed: ${error.message}. Trying fallback API key.`);
+    try {
+      const fallbackKey = 'AIzaSyBppQSyZoT5E93sP-cnaIsydqKzgakjwuo';
+      if (YOUTUBE_API_KEY !== fallbackKey) {
+        return await tryApi(fallbackKey);
+      }
+    } catch (err2) {
+      // fallthrough
+    }
+    logger.warn(`Fallback YouTube search API failed. Falling back to yt-search.`);
     return await searchYouTubeFallback(searchQuery);
   }
 };
@@ -91,8 +102,8 @@ const searchYouTubeFallback = async (query) => {
  * @returns {Promise<Array>} List of mapped track objects
  */
 export const getTrendingTracks = async () => {
-  try {
-    logger.info('Fetching trending music from YouTube API v3');
+  const tryApi = async (keyToUse) => {
+    logger.info('Fetching trending music from YouTube API v3 with key');
     const response = await axios.get('https://www.googleapis.com/youtube/v3/videos', {
       params: {
         part: 'snippet,contentDetails',
@@ -100,17 +111,14 @@ export const getTrendingTracks = async () => {
         videoCategoryId: '10', // Music category
         maxResults: 15,
         regionCode: 'US', // Required for serverless to not return empty
-        key: YOUTUBE_API_KEY
+        key: keyToUse
       }
     });
 
     const items = response.data.items || [];
-    if (items.length === 0) {
-      return await getTrendingFallback();
-    }
+    if (items.length === 0) throw new Error("API returned 0 items");
 
     return items.map(item => {
-      // Parse ISO 8601 duration (e.g. PT3M45S -> 225 seconds)
       let durationSec = 180;
       try {
         const matches = item.contentDetails?.duration?.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
@@ -135,8 +143,21 @@ export const getTrendingTracks = async () => {
         source: 'youtube'
       };
     });
+  };
+
+  try {
+    return await tryApi(YOUTUBE_API_KEY);
   } catch (error) {
-    logger.warn(`YouTube trending API failed: ${error.message}. Falling back to yt-search.`);
+    logger.warn(`Primary YouTube trending API failed: ${error.message}. Trying fallback API key.`);
+    try {
+      const fallbackKey = 'AIzaSyBppQSyZoT5E93sP-cnaIsydqKzgakjwuo';
+      if (YOUTUBE_API_KEY !== fallbackKey) {
+        return await tryApi(fallbackKey);
+      }
+    } catch (err2) {
+       // fallthrough
+    }
+    logger.warn(`Fallback YouTube trending API failed. Falling back to yt-search.`);
     return await getTrendingFallback();
   }
 };
