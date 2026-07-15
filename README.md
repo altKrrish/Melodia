@@ -15,16 +15,15 @@ A full-stack music streaming application with user authentication, playlist mana
 - Like/unlike songs
 - Smart playlist generation based on user preferences
 
-🎧 **Spotify Integration**
-- Search trending songs from Spotify
+🎧 **Youtube Integration**
+- Search trending songs from Youtube
 - View new releases
-- Combine local and Spotify songs
+- Combine local and Youtube songs
 
 ## Prerequisites
 
 - Node.js (v14+)
 - MongoDB (local or cloud)
-- Spotify Developer Account (for API integration)
 
 ## Installation
 
@@ -136,9 +135,9 @@ The application includes comprehensive error handling:
 ## Future Enhancements
 
 - [ ] User profile management
-- [ ] Share playlists with other users
+- [x] Share playlists with other users
 - [ ] Music recommendations engine
-- [ ] Social features (follow users, see friend activity)
+- [x] Social features (follow users, see friend activity)
 - [ ] Advanced search filters
 - [ ] Mobile app
 
