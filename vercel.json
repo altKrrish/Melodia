@@ -24,19 +24,19 @@
     },
     {
       "src": "/assets/(.*)",
-      "dest": "frontend/dist/assets/$1"
+      "dest": "assets/$1"
     },
     {
       "src": "/favicon.ico",
-      "dest": "frontend/dist/favicon.ico"
+      "dest": "favicon.ico"
     },
     {
       "src": "/robots.txt",
-      "dest": "frontend/dist/robots.txt"
+      "dest": "robots.txt"
     },
     {
       "src": "/(.*)",
-      "dest": "frontend/dist/index.html"
+      "dest": "index.html"
     }
   ]
 }
