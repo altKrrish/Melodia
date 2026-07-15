@@ -113,6 +113,14 @@ const AVATARS = [
 
 // Reusable Playlist Cover Component
 const PlaylistCover = ({ playlist, className = "" }: { playlist: Playlist | any, className?: string }) => {
+  if (!playlist) {
+    return (
+      <div className={`flex items-center justify-center bg-indigo-900/40 text-indigo-400 ${className}`}>
+        <Music size={24} />
+      </div>
+    );
+  }
+
   if (playlist.coverImage) {
     return <img src={playlist.coverImage} alt={playlist.name} loading="lazy" className={`object-cover ${className}`} />;
   }
