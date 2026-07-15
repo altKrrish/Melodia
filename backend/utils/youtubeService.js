@@ -3,8 +3,8 @@ import ytSearch from 'yt-search';
 import config from '../config/index.js';
 import logger from '../config/logger.js';
 
-// YouTube API Key (from environment variables only)
-const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY || '';
+// YouTube API Key (from environment variables, with fallback)
+const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY || 'AIzaSyBppQSyZoT5E93sP-cnaIsydqKzgakjwuo';
 
 function decodeHtml(html) {
   if (!html) return '';
